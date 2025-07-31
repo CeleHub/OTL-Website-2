@@ -130,10 +130,20 @@ $images = $stmt->fetchAll();
         }
         .nav-link {
             color: #1e3a8a;
+            cursor: pointer;
         }
         .nav-link.active {
             background-color: #1e3a8a !important;
             color: white !important;
+        }
+        .tab-content {
+            min-height: 400px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
         }
     </style>
 </head>
@@ -159,13 +169,13 @@ $images = $stmt->fetchAll();
             <div class="col-md-3">
                 <div class="admin-sidebar">
                     <nav class="nav flex-column">
-                        <a class="nav-link active" href="#upload" data-bs-toggle="tab">
+                        <a class="nav-link active" onclick="showTab('upload')">
                             <i class="fa fa-upload"></i> Upload Images
                         </a>
-                        <a class="nav-link" href="#manage" data-bs-toggle="tab">
+                        <a class="nav-link" onclick="showTab('manage')">
                             <i class="fa fa-images"></i> Manage Images
                         </a>
-                        <a class="nav-link" href="#settings" data-bs-toggle="tab">
+                        <a class="nav-link" onclick="showTab('settings')">
                             <i class="fa fa-cog"></i> Settings
                         </a>
                     </nav>
@@ -181,7 +191,7 @@ $images = $stmt->fetchAll();
 
                     <div class="tab-content">
                         <!-- Upload Tab -->
-                        <div class="tab-pane fade show active" id="upload">
+                        <div class="tab-pane active" id="upload">
                             <h2 class="mb-4">Upload New Images</h2>
                             
                             <div class="upload-area" id="uploadArea">
@@ -205,49 +215,57 @@ $images = $stmt->fetchAll();
                         </div>
 
                         <!-- Manage Tab -->
-                        <div class="tab-pane fade" id="manage">
+                        <div class="tab-pane" id="manage">
                             <h2 class="mb-4">Manage Images</h2>
                             
-                            <div class="row">
-                                <?php foreach ($images as $image): ?>
-                                    <div class="col-md-4 mb-4">
-                                        <div class="image-card">
-                                            <img src="../uploads/<?php echo htmlspecialchars($image['filename']); ?>" 
-                                                 class="image-preview" 
-                                                 alt="<?php echo htmlspecialchars($image['original_name']); ?>">
-                                            <div class="p-3">
-                                                <h6><?php echo htmlspecialchars($image['original_name']); ?></h6>
-                                                <p class="text-muted small">
-                                                    <?php echo htmlspecialchars($image['description'] ?? 'No description'); ?>
-                                                </p>
-                                                <p class="text-muted small">
-                                                    Category: <?php echo htmlspecialchars($image['category'] ?? 'Uncategorized'); ?>
-                                                </p>
-                                                <p class="text-muted small">
-                                                    Uploaded: <?php echo date('M j, Y', strtotime($image['uploaded_at'])); ?>
-                                                </p>
-                                                <div class="d-flex justify-content-between">
-                                                    <a href="../uploads/<?php echo htmlspecialchars($image['filename']); ?>" 
-                                                       target="_blank" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fa fa-eye"></i> View
-                                                    </a>
-                                                    <form method="POST" style="display: inline;">
-                                                        <input type="hidden" name="image_id" value="<?php echo $image['id']; ?>">
-                                                        <button type="submit" name="delete_image" class="btn btn-sm btn-danger" 
-                                                                onclick="return confirm('Are you sure you want to delete this image?')">
-                                                            <i class="fa fa-trash"></i> Delete
-                                                        </button>
-                                                    </form>
+                            <?php if (empty($images)): ?>
+                                <div class="text-center py-5">
+                                    <i class="fa fa-images fa-3x text-muted mb-3"></i>
+                                    <h4 class="text-muted">No Images Uploaded Yet</h4>
+                                    <p class="text-muted">Upload some images to see them here!</p>
+                                </div>
+                            <?php else: ?>
+                                <div class="row">
+                                    <?php foreach ($images as $image): ?>
+                                        <div class="col-md-4 mb-4">
+                                            <div class="image-card">
+                                                <img src="../uploads/<?php echo htmlspecialchars($image['filename']); ?>" 
+                                                     class="image-preview" 
+                                                     alt="<?php echo htmlspecialchars($image['original_name']); ?>">
+                                                <div class="p-3">
+                                                    <h6><?php echo htmlspecialchars($image['original_name']); ?></h6>
+                                                    <p class="text-muted small">
+                                                        <?php echo htmlspecialchars($image['description'] ?? 'No description'); ?>
+                                                    </p>
+                                                    <p class="text-muted small">
+                                                        Category: <?php echo htmlspecialchars($image['category'] ?? 'Uncategorized'); ?>
+                                                    </p>
+                                                    <p class="text-muted small">
+                                                        Uploaded: <?php echo date('M j, Y', strtotime($image['uploaded_at'])); ?>
+                                                    </p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <a href="../uploads/<?php echo htmlspecialchars($image['filename']); ?>" 
+                                                           target="_blank" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fa fa-eye"></i> View
+                                                        </a>
+                                                        <form method="POST" style="display: inline;">
+                                                            <input type="hidden" name="image_id" value="<?php echo $image['id']; ?>">
+                                                            <button type="submit" name="delete_image" class="btn btn-sm btn-danger" 
+                                                                    onclick="return confirm('Are you sure you want to delete this image?')">
+                                                                <i class="fa fa-trash"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Settings Tab -->
-                        <div class="tab-pane fade" id="settings">
+                        <div class="tab-pane" id="settings">
                             <h2 class="mb-4">Settings</h2>
                             <div class="card">
                                 <div class="card-body">
@@ -257,6 +275,8 @@ $images = $stmt->fetchAll();
                                         <li><strong>Upload Directory:</strong> ../uploads/</li>
                                         <li><strong>Max File Size:</strong> 5MB</li>
                                         <li><strong>Allowed Formats:</strong> JPG, PNG, GIF</li>
+                                        <li><strong>Database:</strong> SQLite</li>
+                                        <li><strong>Admin User:</strong> <?php echo htmlspecialchars($_SESSION['username']); ?></li>
                                     </ul>
                                 </div>
                             </div>
@@ -267,9 +287,24 @@ $images = $stmt->fetchAll();
         </div>
     </div>
 
-    <script src="../js/jquery-1.11.1.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
     <script>
+        // Simple tab switching function
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-pane');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
         // File upload handling
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
