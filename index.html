@@ -566,52 +566,60 @@
         Contact Us
         ==================================== -->		
 		
-		<!-- <section id="contact" class="contact"> -->
-			<!-- <div class="container"> -->
-				<!-- <div class="row mb50"> -->
+		<section id="contact" class="contact">
+			<div class="container">
+				<div class="row mb50">
 				
 					<!-- <div class="sec-title text-center mb50 wow fadeInDown animated" data-wow-duration="500ms"> -->
 						<!-- <h2>Let’s Discuss</h2> -->
 						<!-- <div class="devider"><i class="fa fa-heart-o fa-lg"></i></div> -->
 					<!-- </div> -->
 					
-					<!-- <div class="sec-sub-title text-center wow rubberBand animated" data-wow-duration="1000ms"> -->
-						<!-- <p>We're here for you!</p> -->
-					<!-- </div> -->
+					<div class="sec-sub-title text-center wow rubberBand animated" data-wow-duration="1000ms">
+						<p>We're here for you!</p>
+					</div>
 					
 					<!-- contact address -->
-					<!-- <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 wow fadeInLeft animated" data-wow-duration="500ms"> -->
-						<!-- <div class="contact-address"> -->
-							<!-- <h3>Zone B, Block 11, Shop 39 (B11/39)</h3> -->
-							<!-- <p>Allied Spare Parts and Machinery Dealers Association (ASPMDA), Trade Fair,</p> -->
-							<!-- <p>Lagos, Nigeria.</p> -->
-							<!-- <p>(+234) 803 377 0318</p> -->
-						<!-- </div> -->
-					<!-- </div> -->
+					<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 wow fadeInLeft animated" data-wow-duration="500ms">
+						<div class="contact-address">
+							<h3>Zone B, Block 11, Shop 39 (B11/39)</h3>
+							<p>Allied Spare Parts and Machinery Dealers Association (ASPMDA), Trade Fair,</p>
+							<p>Lagos, Nigeria.</p>
+							<p>(+234) 803 377 0318</p>
+						</div>
+					</div>
 					<!-- end contact address -->
 					
 					<!-- contact form -->
-					<!-- <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 wow fadeInDown animated" data-wow-duration="500ms" data-wow-delay="300ms"> -->
-						<!-- <div class="contact-form"> -->
-							<!-- <h3>Beep us!</h3> -->
-							<!-- <form action="#" id="contact-form"> -->
-								<!-- <div class="input-group name-email"> -->
-									<!-- <div class="input-field"> -->
-										<!-- <input type="text" name="name" id="name" placeholder="Name" class="form-control"> -->
-									<!-- </div> -->
-									<!-- <div class="input-field"> -->
-										<!-- <input type="email" name="email" id="email" placeholder="Email" class="form-control"> -->
-									<!-- </div> -->
-								<!-- </div> -->
-								<!-- <div class="input-group"> -->
-									<!-- <textarea name="message" id="message" placeholder="Message" class="form-control"></textarea> -->
-								<!-- </div> -->
-								<!-- <div class="input-group"> -->
-									<!-- <input type="submit" id="form-submit" class="pull-right" value="Send message"> -->
-								<!-- </div> -->
-							<!-- </form> -->
-						<!-- </div> -->
-					<!-- </div> -->
+					<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 wow fadeInDown animated" data-wow-duration="500ms" data-wow-delay="300ms">
+						<div class="contact-form">
+							<h3>Beep us!</h3>
+							<form action="#" id="contact-form">
+								<div class="input-group name-email">
+									<div class="input-field">
+										<input type="text" name="name" id="name" placeholder="Name" class="form-control">
+									</div>
+									<div class="input-field">
+										<input type="email" name="email" id="email" placeholder="Email" class="form-control">
+									</div>
+								</div>
+								<div class="input-group">
+									<textarea name="message" id="message" placeholder="Message" class="form-control"></textarea>
+								</div>
+								<div class="input-group">
+									<input type="submit" id="form-submit" class="pull-right" value="Send message">
+								</div>
+							</form>
+							
+							<!-- Success and Error Messages -->
+							<div id="success" style="display: none;" class="alert alert-success">
+								<strong>Success!</strong> Your message has been sent successfully.
+							</div>
+							<div id="error" style="display: none;" class="alert alert-danger">
+								<strong>Error!</strong> There was a problem sending your message. Please try again.
+							</div>
+						</div>
+					</div>
 					<!-- end contact form -->
 					
 					<!-- footer social links -->
@@ -625,14 +633,14 @@
 					<!-- </div> -->
 					<!-- end footer social links -->
 					
-				<!-- </div> -->
-			<!-- </div> -->
+				</div>
+			</div>
 			
 			<!-- Google map -->
 			<!-- <div id="map_canvas" class="wow bounceInDown animated" data-wow-duration="500ms"></div> -->
 			<!-- End Google map -->
 			
-		<!-- </section> -->
+		</section>
 		
         <!--
         End Contact Us
@@ -788,13 +796,18 @@
 							type:"POST",
 							data: $(form).serialize(),
 							url:"process.php",
-							success: function() {
-								$('#contact-form :input').attr('disabled', 'disabled');
-								$('#contact-form').fadeTo( "slow", 0.15, function() {
-									$(this).find(':input').attr('disabled', 'disabled');
-									$(this).find('label').css('cursor','default');
-									$('#success').fadeIn();
-								});
+							dataType: "json",
+							success: function(response) {
+								if (response.success) {
+									$('#contact-form :input').attr('disabled', 'disabled');
+									$('#contact-form').fadeTo( "slow", 0.15, function() {
+										$(this).find(':input').attr('disabled', 'disabled');
+										$(this).find('label').css('cursor','default');
+										$('#success').fadeIn();
+									});
+								} else {
+									$('#error').fadeIn();
+								}
 							},
 							error: function() {
 								$('#contact-form').fadeTo( "slow", 0.15, function() {

@@ -1,19 +1,40 @@
 <?php
+// Contact form processor for OTL Website
 
-    $to = "";
-    $from = $_REQUEST['name'];
-    $subject = $_REQUEST['subject'];
-    $name = $_REQUEST['name'];
-    $headers = "From: $from";
+// Set the recipient email address (change this to your actual email)
+$to = "obijonstradelink@gmail.com";
 
-    $fields = array();
-    $fields{"name"} = "name";
-    $fields{"email"} = "email";
-    $fields{"subject"} = "subject";
-    $fields{"message"} = "message";
+// Get form data
+$name = $_REQUEST['name'] ?? '';
+$email = $_REQUEST['email'] ?? '';
+$message = $_REQUEST['message'] ?? '';
 
-    $body = "Here is what was sent:\n\n"; foreach($fields as $a => $b){   $body .= sprintf("%20s: %s\n",$b,$_REQUEST[$a]); }
+// Set email subject
+$subject = "New Contact Form Message from OTL Website";
 
-    $send = mail($to, $subject, $body, $headers);
+// Set email headers
+$headers = "From: $email\r\n";
+$headers .= "Reply-To: $email\r\n";
+$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
+// Create email body
+$body = "New contact form submission from OTL Website:\n\n";
+$body .= "Name: " . $name . "\n";
+$body .= "Email: " . $email . "\n";
+$body .= "Message:\n" . $message . "\n\n";
+$body .= "---\n";
+$body .= "Sent from OTL Website Contact Form\n";
+$body .= "Date: " . date('Y-m-d H:i:s') . "\n";
+
+// Send email
+$send = mail($to, $subject, $body, $headers);
+
+// Return JSON response for AJAX
+header('Content-Type: application/json');
+
+if ($send) {
+    echo json_encode(['success' => true, 'message' => 'Message sent successfully!']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Failed to send message. Please try again.']);
+}
 ?>
